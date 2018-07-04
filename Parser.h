@@ -13,7 +13,7 @@
 #include "Utility.h"
 #include "Instruction.h"
 
-// #define RUN2
+#define RUN2
 using namespace std;
 extern map<string, short> regTable;
 extern map<string, opType> opTable;
