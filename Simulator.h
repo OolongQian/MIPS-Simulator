@@ -189,6 +189,7 @@ public:
                             // registers_display();
                     }
             }
+            procs.print_time();
             if(returnFlag) return registers[regTable["$a0"]];
             else return 0;
     }

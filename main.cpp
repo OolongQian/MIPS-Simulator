@@ -6,6 +6,7 @@
 using namespace std;
 
 int main(int argc, char **argv) {
+    int retCode;
 #ifdef RUN
     string filename = argv[1];
     fp.open(filename);
@@ -15,5 +16,6 @@ int main(int argc, char **argv) {
 #ifdef RUN
     fp.close();
 #endif
-    return sim.pipeline();
+    retCode = sim.pipeline();
+    return retCode;
 }

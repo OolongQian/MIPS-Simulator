@@ -266,60 +266,76 @@ private:
     Specialist *specialist;
 private:
     bool fetch() {
+        /*
         if(specialist != nullptr) {
             delete specialist;
             specialist = nullptr;
         }
-
+        */
         if(registers[34] >= instructionPool->size())
             return false;
         instruction = &instructionPool->at(registers[34]);
         switch (instruction->op) {
             case ADD: case ADDU: case ADDIU:
-                specialist = (Specialist*) new Adder(instruction);
+                new (specialist) Adder(instruction);
+                // specialist = (Specialist*) new Adder(instruction);
                 break;
             case SUB: case SUBU:
-                specialist = (Specialist*) new Suber(instruction);
+                new (specialist) Suber(instruction);
+                // specialist = (Specialist*) new Suber(instruction);
                 break;
             case MUL: case MULU:
-                specialist = (Specialist*) new Muler(instruction);
+                new (specialist) Muler(instruction);
+                // specialist = (Specialist*) new Muler(instruction);
                 break;
             case DIV: case DIVU:
-                specialist = (Specialist*) new Diver(instruction);
+                new (specialist) Diver(instruction);
+                // specialist = (Specialist*) new Diver(instruction);
                 break;
             case XOR: case XORU: case REM: case REMU:
-                specialist = (Specialist*) new XorRemer(instruction);
+                new (specialist) XorRemer(instruction);
+                // specialist = (Specialist*) new XorRemer(instruction);
                 break;
             case NEG: case NEGU:
-                specialist = (Specialist*) new Neger(instruction);
+                new (specialist) Neger(instruction);
+                // specialist = (Specialist*) new Neger(instruction);
                 break;
             case LI:
-                specialist = (Specialist*) new Lier(instruction);
+                new (specialist) Lier(instruction);
+                // specialist = (Specialist*) new Lier(instruction);
                 break;
             case SEQ: case SGE: case SGT: case SLE: case SLT: case SNE:
-                specialist = (Specialist*) new Comparer(instruction);
+                new (specialist) Comparer(instruction);
+                // specialist = (Specialist*) new Comparer(instruction);
                 break;
             case BB: case BEQ: case BNE: case BGE: case BLE: case BGT: case BLT:
             case BEQZ: case BNEZ: case BLEZ: case BGEZ: case BGTZ: case BLTZ:
-                specialist = (Specialist*) new Beer(instruction);
+                new (specialist) Beer(instruction);
+                // specialist = (Specialist*) new Beer(instruction);
                 break;
             case J: case JR: case JAL: case JALR:
-                specialist = (Specialist*) new Jer(instruction);
+                new (specialist) Jer(instruction);
+                // specialist = (Specialist*) new Jer(instruction);
                 break;
             case LA: case LB: case LH: case LW:
-                specialist = (Specialist*) new Loader(instruction);
+                new (specialist) Loader(instruction);
+                // specialist = (Specialist*) new Loader(instruction);
                 break;
             case SB: case SH: case SW:
-                specialist = (Specialist*) new Storer(instruction);
+                new (specialist) Storer(instruction);
+                // specialist = (Specialist*) new Storer(instruction);
                 break;
             case MOVE: case MFHI: case MFLO:
-                specialist = (Specialist*) new Mover(instruction);
+                new (specialist) Mover(instruction);
+                // specialist = (Specialist*) new Mover(instruction);
                 break;
             case NOP:
-                specialist = (Specialist*) new Noper(instruction);
+                new (specialist) Noper(instruction);
+                // specialist = (Specialist*) new Noper(instruction);
                 break;
             case SYSCALL:
-                specialist = (Specialist*) new Syser(instruction);
+                new (specialist) Syser(instruction);
+                // specialist = (Specialist*) new Syser(instruction);
                 break;
         }
         specialist->Npc = ++registers[34];
@@ -330,7 +346,8 @@ public:
     explicit Processor() {
         instruction = nullptr;
         stage = FETCH;
-        specialist = nullptr;
+        // specialist = nullptr;
+        specialist = (Specialist *) malloc(200);
     }
 
     bool step() {
