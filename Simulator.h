@@ -167,8 +167,9 @@ public:
      * And initialize pc to be main function's position.
      * */
     void parse_src() {
-        registers[34] = parser->parse(*instructionPool, *mainMemory, var2mem, lab2src);
+        registers[34] = parser->parse();
         // display_all_label();
+        parser->code_analyzer();
     }
 
     int pipeline() {
@@ -189,7 +190,6 @@ public:
                             // registers_display();
                     }
             }
-            procs.print_time();
             if(returnFlag) return registers[regTable["$a0"]];
             else return 0;
     }

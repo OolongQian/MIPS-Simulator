@@ -1,9 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include "Simulator.h"
+#include "Utility.h"
 
-#define RUN
 using namespace std;
+
+// #define RUN
 
 int main(int argc, char **argv) {
     int retCode;

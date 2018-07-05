@@ -31,7 +31,14 @@ enum opType {
 struct Instruction {
     opType op;
     vector<string> tokens;
-    Instruction(opType opT, vector<string> vec): op(opT), tokens(vec) {}
+    int ins_code[4];
+    bool not_imm;
+    bool ch_in_str;
+    Instruction(opType opT, vector<string> vec): op(opT), tokens(vec) {
+    		memset(ins_code, 0, sizeof(ins_code));
+		    not_imm = false;
+		    ch_in_str = false;
+    }
 };
 
 #endif //MYMIPSRE_INSTRUCTION_H

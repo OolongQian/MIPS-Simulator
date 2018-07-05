@@ -6,7 +6,6 @@
 #include "Simulator.h"
 #include "limits.h"
 
-
 extern Parser *parser;
 
 extern vector<Instruction> *instructionPool;
@@ -24,11 +23,18 @@ extern map<string, opType> opTable;
 extern bool returnFlag;
 
 //////////
-Adder::Adder(Instruction *instruct) {
-    instruction = instruct;
+Adder::Adder(Processor *procs) {
+    this->procs = procs;
 }
 
 void Adder::decode() {
+    int *ic = procs->instruction->ins_code;
+
+    Rdest = ic[0];
+    Rsrc1 = ic[1];
+    if(procs->instruction->not_imm) Rsrc2 = ic[2];
+    else Imm = ic[2];
+    /*
     vector<string> &tokens = instruction->tokens;
     bool flag = tokens[3][0] == '$';
 
@@ -37,14 +43,15 @@ void Adder::decode() {
     /// 特判立即数
     if(flag) Rsrc2 = regTable[tokens[3]];
     else Imm = str2int(tokens[3]);
+    */
 
     A = registers[Rsrc1];
-    if(flag) B = registers[Rsrc2];
+    if(procs->instruction->not_imm) B = registers[Rsrc2];
     else B = Imm;
 }
 
 void Adder::execute() {
-    if(instruction->op == ADD) ALUoutput = A + B;
+    if(procs->instruction->op == ADD) ALUoutput = A + B;
     else ALUoutput = (unsigned) A + (unsigned) B;
 }
 
@@ -57,12 +64,19 @@ void Adder::writeBack() {
 }
 
 //////////
-Suber::Suber(Instruction *instruct) {
-    instruction = instruct;
+Suber::Suber(Processor *procs) {
+    this->procs = procs;
 }
 
 void Suber::decode() {
-    vector<string> &tokens = instruction->tokens;
+    int *ic = procs->instruction->ins_code;
+
+    Rdest = ic[0];
+    Rsrc1 = ic[1];
+    if(procs->instruction->not_imm) Rsrc2 = ic[2];
+    else Imm = ic[2];
+    /*
+    vector<string> &tokens = procs->instruction->tokens;
     bool flag = tokens[3][0] == '$';
 
     Rdest = regTable[tokens[1]];
@@ -70,14 +84,15 @@ void Suber::decode() {
     /// 特判立即数
     if(flag) Rsrc2 = regTable[tokens[3]];
     else Imm = str2int(tokens[3]);
+    */
 
     A = registers[Rsrc1];
-    if(flag) B = registers[Rsrc2];
+    if(procs->instruction->not_imm) B = registers[Rsrc2];
     else B = Imm;
 }
 
 void Suber::execute() {
-    if(instruction->op == SUB) ALUoutput = A - B;
+    if(procs->instruction->op == SUB) ALUoutput = A - B;
     else ALUoutput = (unsigned) A - (unsigned) B;
 }
 
@@ -90,13 +105,21 @@ void Suber::writeBack() {
 }
 
 //////////
-Muler::Muler(Instruction *instruct) {
-    instruction = instruct;
+Muler::Muler(Processor *procs) {
+    this->procs = procs;
 }
 
 void Muler::decode() {
-    vector<string> &tokens = instruction->tokens;
-    if(tokens.size() == 4) {
+    int *ic = procs->instruction->ins_code;
+
+    if(procs->instruction->tokens.size() == 4) {
+        Rdest = ic[0];
+        Rsrc1 = ic[1];
+        if(procs->instruction->not_imm)
+            Rsrc2 = ic[2];
+        else
+            Imm = ic[2];
+        /*
         bool flag = tokens[3][0] == '$';
 
         Rdest = regTable[tokens[1]];
@@ -104,20 +127,26 @@ void Muler::decode() {
         /// 特判立即数
         if(flag) Rsrc2 = regTable[tokens[3]];
         else Imm = str2int(tokens[3]);
-
+         */
         A = registers[Rsrc1];
-        if(flag) B = registers[Rsrc2];
+        if(procs->instruction->not_imm) B = registers[Rsrc2];
         else B = Imm;
     }
-    else if(tokens.size() == 3) {
+    else if(procs->instruction->tokens.size() == 3) {
+        Rsrc1 = ic[1];
+        if(procs->instruction->not_imm)
+            Rsrc2 = ic[2];
+        else
+            Imm = ic[2];
+        /*
         bool flag = tokens[2][0] == '$';
 
-        Rdest = regTable[tokens[1]];
-        if(flag) Rsrc1 = regTable[tokens[2]];
+        Rsrc1 = regTable[tokens[1]];
+        if(flag) Rsrc2 = regTable[tokens[2]];
         else Imm = str2int(tokens[2]);
-
-        A = registers[Rdest];
-        if(flag) B = registers[Rsrc1];
+        */
+        A = registers[Rsrc1];
+        if(procs->instruction->not_imm) B = registers[Rsrc2];
         else B = Imm;
     }
     else {
@@ -126,7 +155,7 @@ void Muler::decode() {
 }
 
 void Muler::execute() {
-    if(instruction->op == MUL) ALUoutput = A * B;
+    if(procs->instruction->op == MUL) ALUoutput = A * B;
     else ALUoutput = (unsigned) A * (unsigned) B;
 }
 
@@ -135,7 +164,7 @@ void Muler::memory() {
 }
 
 void Muler::writeBack() {
-    vector<string> &tokens = instruction->tokens;
+    vector<string> &tokens = procs->instruction->tokens;
     if(tokens.size() == 4) registers[Rdest] = (int) ALUoutput;
     else {
         // hi 32 lo 33
@@ -145,13 +174,21 @@ void Muler::writeBack() {
 }
 
 //////////
-Diver::Diver(Instruction *instruct) {
-    instruction = instruct;
+Diver::Diver(Processor *procs) {
+    this->procs = procs;
 }
 
 void Diver::decode() {
-    vector<string> &tokens = instruction->tokens;
-    if(tokens.size() == 4) {
+    int *ic = procs->instruction->ins_code;
+
+    if(procs->instruction->tokens.size() == 4) {
+        Rdest = ic[0];
+        Rsrc1 = ic[1];
+        if(procs->instruction->not_imm)
+            Rsrc2 = ic[2];
+        else
+            Imm = ic[2];
+        /*
         bool flag = tokens[3][0] == '$';
 
         Rdest = regTable[tokens[1]];
@@ -159,20 +196,26 @@ void Diver::decode() {
         /// 特判立即数
         if(flag) Rsrc2 = regTable[tokens[3]];
         else Imm = str2int(tokens[3]);
-
+         */
         A = registers[Rsrc1];
-        if(flag) B = registers[Rsrc2];
+        if(procs->instruction->not_imm) B = registers[Rsrc2];
         else B = Imm;
     }
-    else if(tokens.size() == 3) {
+    else if(procs->instruction->tokens.size() == 3) {
+        Rsrc1 = ic[1];
+        if(procs->instruction->not_imm)
+            Rsrc2 = ic[2];
+        else
+            Imm = ic[2];
+        /*
         bool flag = tokens[2][0] == '$';
 
-        Rdest = regTable[tokens[1]];
-        if(flag) Rsrc1 = regTable[tokens[2]];
+        Rsrc1 = regTable[tokens[1]];
+        if(flag) Rsrc2 = regTable[tokens[2]];
         else Imm = str2int(tokens[2]);
-
-        A = registers[Rdest];
-        if(flag) B = registers[Rsrc1];
+        */
+        A = registers[Rsrc1];
+        if(procs->instruction->not_imm) B = registers[Rsrc2];
         else B = Imm;
     }
     else {
@@ -181,7 +224,7 @@ void Diver::decode() {
 }
 
 void Diver::execute() {
-    if(instruction->op == DIV) {
+    if(procs->instruction->op == DIV) {
         ALUoutput = A / B;
         remainder = A % B;
     }
@@ -196,7 +239,7 @@ void Diver::memory() {
 }
 
 void Diver::writeBack() {
-    vector<string> &tokens = instruction->tokens;
+    vector<string> &tokens = procs->instruction->tokens;
     if(tokens.size() == 4) registers[Rdest] = (int) ALUoutput;
     else {
         // hi 32 lo 33
@@ -208,11 +251,18 @@ void Diver::writeBack() {
 }
 
 /////////
-XorRemer::XorRemer(Instruction *instruct) {
-    instruction = instruct;
+XorRemer::XorRemer(Processor *procs) {
+    this->procs = procs;
 }
 
 void XorRemer::decode() {
+    int *ic = procs->instruction->ins_code;
+
+    Rdest = ic[0];
+    Rsrc1 = ic[1];
+    if(procs->instruction->not_imm) Rsrc2 = ic[2];
+    else Imm = ic[2];
+    /*
     vector<string> &tokens = instruction->tokens;
     bool flag = tokens[3][0] == '$';
 
@@ -221,14 +271,14 @@ void XorRemer::decode() {
     /// 特判立即数
     if(flag) Rsrc2 = regTable[tokens[3]];
     else Imm = str2int(tokens[3]);
-
+    */
     A = registers[Rsrc1];
-    if(flag) B = registers[Rsrc2];
+    if(procs->instruction->not_imm) B = registers[Rsrc2];
     else B = Imm;
 }
 
 void XorRemer::execute() {
-    switch (instruction->op) {
+    switch (procs->instruction->op) {
         case XOR:
             ALUoutput = A ^ B;
             break;
@@ -255,12 +305,12 @@ void XorRemer::writeBack() {
 }
 
 /////////
-Neger::Neger(Instruction *instruct) {
-    instruction = instruct;
+Neger::Neger(Processor *procs) {
+    this->procs = procs;
 }
 
 void Neger::decode() {
-    vector<string> &tokens = instruction->tokens;
+    // vector<string> &tokens = instruction->tokens;
     /*
     vector<string> &tokens = instruction->tokens;
     bool flag = tokens[2][0] == '$';
@@ -272,14 +322,19 @@ void Neger::decode() {
     if(flag) A = registers[Rsrc1];
     else A = Imm;
      */
+    int *ic = procs->instruction->ins_code;
+    Rdest = ic[0];
+    Rsrc1 = ic[1];
+    /*
     Rdest = regTable[tokens[1]];
     Rsrc1 = regTable[tokens[2]];
+     */
     A = registers[Rsrc1];
 }
 
 /** This is undefined. */
 void Neger::execute() {
-    if(instruction->op == NEG) ALUoutput = -A;
+    if(procs->instruction->op == NEG) ALUoutput = -A;
     else {
         // cerr << "neger is undefined" << endl;
         ALUoutput = ~A;
@@ -295,14 +350,19 @@ void Neger::writeBack() {
 }
 
 /////////
-Lier::Lier(Instruction *instruct) {
-    instruction = instruct;
+Lier::Lier(Processor *procs) {
+    this->procs = procs;
 }
 
 void Lier::decode() {
+    int *ic = procs->instruction->ins_code;
+    /*
     vector<string> &tokens = instruction->tokens;
     Rdest = regTable[tokens[1]];
     Imm = str2int(tokens[2]);
+     */
+    Rdest = ic[0];
+    Imm = ic[1];
 }
 
 void Lier::execute() {
@@ -318,11 +378,18 @@ void Lier::writeBack() {
 }
 
 /////////
-Comparer::Comparer(Instruction *instruct) {
-    instruction = instruct;
+Comparer::Comparer(Processor *procs) {
+    this->procs = procs;
 }
 
 void Comparer::decode() {
+    int *ic = procs->instruction->ins_code;
+
+    Rdest = ic[0];
+    Rsrc1 = ic[1];
+    if(procs->instruction->not_imm) Rsrc2 = ic[2];
+    else Imm = ic[2];
+    /*
     vector<string> &tokens = instruction->tokens;
     bool flag = tokens[3][0] == '$';
 
@@ -331,14 +398,14 @@ void Comparer::decode() {
     /// 特判立即数
     if(flag) Rsrc2 = regTable[tokens[3]];
     else Imm = str2int(tokens[3]);
-
+     */
     A = registers[Rsrc1];
-    if(flag) B = registers[Rsrc2];
+    if(procs->instruction->not_imm) B = registers[Rsrc2];
     else B = Imm;
 }
 
 void Comparer::execute() {
-    switch (instruction->op) {
+    switch (procs->instruction->op) {
         case SEQ:
             ALUoutput = A == B;
             break;
@@ -374,16 +441,44 @@ void Comparer::writeBack() {
 }
 
 /////////
-Beer::Beer(Instruction *instruct) {
-    instruction = instruct;
+Beer::Beer(Processor *procs) {
+    this->procs = procs;
 }
 
 void Beer::decode() {
+    int *ic = procs->instruction->ins_code;
+
+    vector<string> &tokens = procs->instruction->tokens;
+    if(tokens.size() == 4) {
+        Rsrc1 = ic[0];
+        if(procs->instruction->not_imm)
+            Rsrc2 = ic[1];
+        else
+            Imm = ic[1];
+
+        A = registers[Rsrc1];
+        if(procs->instruction->not_imm)
+            B = registers[Rsrc2];
+        else
+            B = Imm;
+
+        label_address = ic[2];
+    }
+    else if(tokens.size() == 3) {
+        Rsrc1 = ic[0];
+        A = registers[Rsrc1];
+        B = 0;
+        label_address = ic[2];
+    }
+    else if(tokens.size() == 2) {
+        label_address = ic[2];
+    }
+/*
     vector<string> &tokens = instruction->tokens;
     if(tokens.size() == 4) {
         bool flag = tokens[2][0] == '$';
 
-        Rsrc1 = regTable[tokens[1]];
+        Rsrc1 = ic[0];
         if(flag) Rsrc2 = regTable[tokens[2]];
         else Imm = str2int(tokens[2]);
 
@@ -401,12 +496,12 @@ void Beer::decode() {
     }
     else if(tokens.size() == 2) {
         label_address = lab2src[tokens[1]];
-    }
+    }*/
 }
 
 void Beer::execute() {
     ALUoutput = label_address;
-    switch (instruction->op) {
+    switch (procs->instruction->op) {
         case BB:
             Cond = true;
             break;
@@ -445,17 +540,20 @@ void Beer::writeBack() {
 }
 
 /////////
-Jer::Jer(Instruction *instruct) {
-    instruction = instruct;
+Jer::Jer(Processor *procs) {
+    this->procs = procs;
 }
 
 void Jer::decode() {
-    switch (instruction->op) {
+    int *ic = procs->instruction->ins_code;
+    switch (procs->instruction->op) {
     case J: case JAL:
-        label_address = lab2src[instruction->tokens[1]];
+        label_address = ic[0];
+        // label_address = lab2src[instruction->tokens[1]];
         break;
     case JR: case JALR:
-        Rsrc1 = regTable[instruction->tokens[1]];
+        Rsrc1 = ic[0];
+        // Rsrc1 = regTable[instruction->tokens[1]];
         break;
     default:
         cerr << "Jer bug" << endl;
@@ -464,7 +562,7 @@ void Jer::decode() {
 }
 
 void Jer::execute() {
-    switch (instruction->op) {
+    switch (procs->instruction->op) {
     case JR: case JALR:
         ALUoutput = registers[Rsrc1];
         break;
@@ -481,7 +579,7 @@ void Jer::memory() {
 }
 
 void Jer::writeBack() {
-    switch (instruction->op) {
+    switch (procs->instruction->op) {
         case JAL: case JALR:
             registers[31] = Npc;
             break;
@@ -492,8 +590,8 @@ void Jer::writeBack() {
 }
 
 //////////
-Loader::Loader(Instruction *instruct) {
-    instruction = instruct;
+Loader::Loader(Processor *procs) {
+    this->procs = procs;
     offset = INT_MAX;
 }
 
@@ -501,6 +599,16 @@ Loader::Loader(Instruction *instruct) {
  * Note that here address can be displacement addressing.
  * */
 void Loader::decode() {
+    int *ic = procs->instruction->ins_code;
+    Rdest = ic[0];
+    if(!procs->instruction->ch_in_str) {
+        label_address = ic[1];
+    }
+    else {
+        offset = ic[1];
+        Rsrc1 = ic[2];
+    }
+    /*
     vector<string> &tokens = instruction->tokens;
     Rdest = regTable[tokens[1]];
     /// if this line is label.
@@ -511,6 +619,7 @@ void Loader::decode() {
     else {
         displacement_extractor(tokens[2], offset, Rsrc1);
     }
+     */
 }
 
 void Loader::execute() {
@@ -519,7 +628,7 @@ void Loader::execute() {
 }
 
 void Loader::memory() {
-    switch (instruction->op) {
+    switch (procs->instruction->op) {
         case LB:
             mainMemory->memGet((int) ALUoutput, 1, LMD_temp);
             break;
@@ -535,7 +644,7 @@ void Loader::memory() {
 }
 
 void Loader::writeBack() {
-    switch (instruction->op) {
+    switch (procs->instruction->op) {
         case LA:
             registers[Rdest] = (int) ALUoutput;
             break;
@@ -557,12 +666,22 @@ void Loader::writeBack() {
 }
 
 /////////
-Storer::Storer(Instruction *instruct) {
-    instruction = instruct;
+Storer::Storer(Processor *procs) {
+    this->procs = procs;
     offset = INT_MAX;
 }
 
 void Storer::decode() {
+    int *ic = procs->instruction->ins_code;
+    Rdest = ic[0];
+    if(!procs->instruction->ch_in_str) {
+        label_address = ic[1];
+    }
+    else {
+        offset = ic[1];
+        Rsrc1 = ic[2];
+    }
+    /*
     vector<string> &tokens = instruction->tokens;
     Rdest = regTable[tokens[1]];
     /// if this line is label.
@@ -573,6 +692,7 @@ void Storer::decode() {
     else {
         displacement_extractor(tokens[2], offset, Rsrc1);
     }
+     */
 }
 
 void Storer::execute() {
@@ -581,7 +701,7 @@ void Storer::execute() {
 }
 
 void Storer::memory() {
-    switch (instruction->op) {
+    switch (procs->instruction->op) {
         case SB:
             mainMemory->memSet((int) ALUoutput, 1, (char *)(registers + Rdest));
             break;
@@ -601,16 +721,18 @@ void Storer::writeBack() {
 }
 
 /////////
-Mover::Mover(Instruction *instruct) {
-    instruction = instruct;
+Mover::Mover(Processor *procs) {
+    this->procs = procs;
 }
 
 void Mover::decode() {
-    Rdest = regTable[instruction->tokens[1]];
-    if(instruction->op == MOVE)
-        Rsrc1 = regTable[instruction->tokens[2]];
+    int *ic = procs->instruction->ins_code;
+    Rdest = ic[0];
+    if(procs->instruction->op == MOVE)
+        Rsrc1 = ic[1];
+        // Rsrc1 = regTable[instruction->tokens[2]];
 
-    switch (instruction->op) {
+    switch (procs->instruction->op) {
         case MOVE:
             A = registers[Rsrc1];
             break;
@@ -638,14 +760,19 @@ void Mover::writeBack() {
 }
 
 //////////
-Syser::Syser(Instruction *instruct) {
-    instruction = instruct;
+Syser::Syser(Processor *procs) {
+    this->procs = procs;
 }
 
 void Syser::decode() {
+    /*
     opCode = registers[regTable["$v0"]];  /// 系统调用编号值。
     A = registers[regTable["$a0"]];
     B = registers[regTable["$a1"]];
+     */
+    opCode = registers[2];  /// 系统调用编号值。
+    A = registers[4];
+    B = registers[5];
 }
 
 void Syser::execute() {
@@ -719,13 +846,16 @@ void Syser::memory() {
 void Syser::writeBack() {
     switch (opCode) {
         case 5:
-            registers[regTable["$v0"]] = stdin_temp;
+            registers[2] = stdin_temp;
+            // registers[regTable["$v0"]] = stdin_temp;
             break;
         case 9:
-            registers[regTable["$v0"]] = heap_address;
+            registers[2] = heap_address;
+            // registers[regTable["$v0"]] = heap_address;
             break;
         case 17:
-            registers[regTable["$a0"]] = 0;
+            registers[4] = 0;
+            // registers[regTable["$a0"]] = 0;
             break;
         default:
             break;

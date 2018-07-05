@@ -11,6 +11,8 @@
 
 #include "Instruction.h"
 
+#define RUN
+
 using namespace std;
 
 extern map<string, short> regTable;
