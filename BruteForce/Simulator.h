@@ -11,7 +11,8 @@
 #include "Instruction.h"
 #include "MemoryHW.h"
 #include "Parser.h"
-#include "Coordinator.h"
+#include "Processors.h"
+
 using namespace std;
 
 
@@ -174,7 +175,7 @@ private:
 				opTable["syscall"] = SYSCALL;
 		}
 
-		Coordinator steward;
+		Processor procs;
 public:
 		Simulator() {
 				parser = new Parser();
@@ -207,7 +208,7 @@ public:
 		int pipeline() {
 				int step_counter = 0;
 
-				steward.run();
+				while (procs.step());
 
 				if (returnFlag) return registers[4];
 				else return 0;

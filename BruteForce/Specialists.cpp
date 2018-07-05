@@ -687,10 +687,10 @@ void Syser::execute() {
             cin.getline(mainMemory->storage + A, B);
             break;
         case 10:
-            syscall_terminate = true;
+            OK = false;
         case 17:
             returnFlag = true;
-            syscall_terminate = true;
+            OK = false;
         default:
             break;
     }

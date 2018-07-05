@@ -7,17 +7,10 @@
 
 #include "Utility.h"
 
-/**
- * program terminate sign imported from "Coordinator.h"
- * */
-extern bool code_end;
-extern bool syscall_terminate;
-
 extern vector<Instruction> *instructionPool;
 extern int registers[];
-
 enum stageType {
-    FETCH, DECODE, EXECUTE, MEMORY, WRITEBACK
+    FETCH, DECODE, EXECUTE, MEMORY, WRITEBACK, EMPTY
 };
 
 class Processor;
@@ -32,12 +25,14 @@ protected:
     bool Cond;
 public:
     int Npc;
+    bool OK;
 
     Specialist() {
         label_address = Rdest = Rsrc1 = Rsrc2 = Imm = A = B = Npc = 0;
         ALUoutput = 0;
         Cond = false;
         procs = nullptr;
+        OK = true;
     }
     virtual ~Specialist() {}
 
@@ -262,46 +257,24 @@ public:
 };
 
 /**
- * A processor is one of the five building blocks in the pipeline.
- * It can simulate all five stages of instructions.
- *
- * It needs adequate interfaces to communicate with upper coordinator, which
- * comprises reporting status, hazards, processing log.
- *
- * It also needs to be maneuvered by coordinator.
- *
- * 注意了，当 processor 处于解锁状态，但是程序已经terminate的情况。
+ * Begin of Processor.
  * */
 class Processor {
 private:
 public:
     Instruction *instruction;
-
-		/**
-		 * instruction line number.
-		 * */
-		int ins_idx;
-
-		stageType stage;
 private:
-		/**
- 		 * processor will do nothing in pipeline if being locked.
- 		 * */
-		bool lock;
+    stageType stage;
     Specialist *specialist[15];
     int designated;             /// chosen specialist.
-
 private:
     /**
      * return whether the instructionPool has ended.
      * */
-    void fetch() {
-        if(registers[34] >= instructionPool->size()) {
-		        code_end = true;
-		        return;
-        }
+    bool fetch() {
+        if(registers[34] >= instructionPool->size())
+            return false;
         instruction = &instructionPool->at(registers[34]);
-        ins_idx = registers[34];
         switch (instruction->op) {
             case ADD: case ADDU: case ADDIU:
                 designated = 0;
@@ -353,6 +326,7 @@ private:
 		        		break;
         }
         specialist[designated]->Npc = ++registers[34];
+        return true;
     }
 
 public:
@@ -360,7 +334,6 @@ public:
         instruction = nullptr;
         stage = FETCH;
         designated = 0;
-        lock = false;
         specialist[0] = new Adder(this);
         specialist[1] = new Suber(this);
         specialist[2] = new Muler(this);
@@ -386,47 +359,36 @@ public:
 
     /**
      * step or reset the specialist.
-     * only do things when unlocked.
      * */
-    void step() {
-				if(!lock) {
-						switch (stage) {
-								case FETCH:
-										fetch();
-										stage = DECODE;
-										break;
-								case DECODE:
-										specialist[designated]->decode();
-										stage = EXECUTE;
-										break;
-								case EXECUTE:
-										specialist[designated]->execute();
-										stage = MEMORY;
-										break;
-								case MEMORY:
-										specialist[designated]->memory();
-										stage = WRITEBACK;
-										break;
-								case WRITEBACK:
-										specialist[designated]->writeBack();
-										stage = FETCH;
-										break;
-								default:
-										break;
-						}
-				}
-    }
+    bool step() {
+        bool Contin = true;
 
-    void set_lock() {
-    		lock = true;
-    }
-
-    void unlock() {
-    		lock = false;
-    }
-
-    void restart() {
-        stage = FETCH;
+        switch (stage) {
+            case FETCH:
+                if(!fetch()) Contin = false;
+                stage = DECODE;
+                break;
+            case DECODE:
+                specialist[designated]->decode();
+                stage = EXECUTE;
+                break;
+            case EXECUTE:
+                specialist[designated]->execute();
+                stage = MEMORY;
+                break;
+            case MEMORY:
+                specialist[designated]->memory();
+                stage = WRITEBACK;
+                break;
+            case WRITEBACK:
+                specialist[designated]->writeBack();
+                stage = FETCH;
+                break;
+            default:
+                break;
+        }
+        if (!specialist[designated]->OK) Contin = false;
+        return Contin;
     }
 
     void display_intruction() {
