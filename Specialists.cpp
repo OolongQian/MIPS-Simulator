@@ -188,15 +188,6 @@ void Diver::decode() {
             Rsrc2 = ic[2];
         else
             Imm = ic[2];
-        /*
-        bool flag = tokens[3][0] == '$';
-
-        Rdest = regTable[tokens[1]];
-        Rsrc1 = regTable[tokens[2]];
-        /// 特判立即数
-        if(flag) Rsrc2 = regTable[tokens[3]];
-        else Imm = str2int(tokens[3]);
-         */
         A = registers[Rsrc1];
         if(procs->instruction->not_imm) B = registers[Rsrc2];
         else B = Imm;
@@ -207,13 +198,6 @@ void Diver::decode() {
             Rsrc2 = ic[2];
         else
             Imm = ic[2];
-        /*
-        bool flag = tokens[2][0] == '$';
-
-        Rsrc1 = regTable[tokens[1]];
-        if(flag) Rsrc2 = regTable[tokens[2]];
-        else Imm = str2int(tokens[2]);
-        */
         A = registers[Rsrc1];
         if(procs->instruction->not_imm) B = registers[Rsrc2];
         else B = Imm;
@@ -242,11 +226,8 @@ void Diver::writeBack() {
     vector<string> &tokens = procs->instruction->tokens;
     if(tokens.size() == 4) registers[Rdest] = (int) ALUoutput;
     else {
-        // hi 32 lo 33
         registers[33] = (int) ALUoutput;
         registers[32] = remainder;
-        // memcpy(registers + 33, &ALUoutput, sizeof(int));
-        // memcpy(registers + 32, &remainder, sizeof(int));
     }
 }
 
@@ -262,16 +243,6 @@ void XorRemer::decode() {
     Rsrc1 = ic[1];
     if(procs->instruction->not_imm) Rsrc2 = ic[2];
     else Imm = ic[2];
-    /*
-    vector<string> &tokens = instruction->tokens;
-    bool flag = tokens[3][0] == '$';
-
-    Rdest = regTable[tokens[1]];
-    Rsrc1 = regTable[tokens[2]];
-    /// 特判立即数
-    if(flag) Rsrc2 = regTable[tokens[3]];
-    else Imm = str2int(tokens[3]);
-    */
     A = registers[Rsrc1];
     if(procs->instruction->not_imm) B = registers[Rsrc2];
     else B = Imm;
@@ -310,35 +281,16 @@ Neger::Neger(Processor *procs) {
 }
 
 void Neger::decode() {
-    // vector<string> &tokens = instruction->tokens;
-    /*
-    vector<string> &tokens = instruction->tokens;
-    bool flag = tokens[2][0] == '$';
-
-    Rdest = regTable[tokens[1]];
-    if(flag) Rsrc1 = regTable[tokens[2]];
-    else Imm = str2int(tokens[2]);
-
-    if(flag) A = registers[Rsrc1];
-    else A = Imm;
-     */
     int *ic = procs->instruction->ins_code;
     Rdest = ic[0];
     Rsrc1 = ic[1];
-    /*
-    Rdest = regTable[tokens[1]];
-    Rsrc1 = regTable[tokens[2]];
-     */
     A = registers[Rsrc1];
 }
 
 /** This is undefined. */
 void Neger::execute() {
     if(procs->instruction->op == NEG) ALUoutput = -A;
-    else {
-        // cerr << "neger is undefined" << endl;
-        ALUoutput = ~A;
-    }
+    else ALUoutput = ~A;
 }
 
 void Neger::memory() {
@@ -356,11 +308,6 @@ Lier::Lier(Processor *procs) {
 
 void Lier::decode() {
     int *ic = procs->instruction->ins_code;
-    /*
-    vector<string> &tokens = instruction->tokens;
-    Rdest = regTable[tokens[1]];
-    Imm = str2int(tokens[2]);
-     */
     Rdest = ic[0];
     Imm = ic[1];
 }
@@ -389,16 +336,6 @@ void Comparer::decode() {
     Rsrc1 = ic[1];
     if(procs->instruction->not_imm) Rsrc2 = ic[2];
     else Imm = ic[2];
-    /*
-    vector<string> &tokens = instruction->tokens;
-    bool flag = tokens[3][0] == '$';
-
-    Rdest = regTable[tokens[1]];
-    Rsrc1 = regTable[tokens[2]];
-    /// 特判立即数
-    if(flag) Rsrc2 = regTable[tokens[3]];
-    else Imm = str2int(tokens[3]);
-     */
     A = registers[Rsrc1];
     if(procs->instruction->not_imm) B = registers[Rsrc2];
     else B = Imm;
@@ -473,30 +410,6 @@ void Beer::decode() {
     else if(tokens.size() == 2) {
         label_address = ic[2];
     }
-/*
-    vector<string> &tokens = instruction->tokens;
-    if(tokens.size() == 4) {
-        bool flag = tokens[2][0] == '$';
-
-        Rsrc1 = ic[0];
-        if(flag) Rsrc2 = regTable[tokens[2]];
-        else Imm = str2int(tokens[2]);
-
-        A = registers[Rsrc1];
-        if(flag) B = registers[Rsrc2];
-        else B = Imm;
-
-        label_address = lab2src[tokens[3]];
-    }
-    else if(tokens.size() == 3) {
-        Rsrc1 = regTable[tokens[1]];
-        A = registers[Rsrc1];
-        B = 0;
-        label_address = lab2src[tokens[2]];
-    }
-    else if(tokens.size() == 2) {
-        label_address = lab2src[tokens[1]];
-    }*/
 }
 
 void Beer::execute() {
@@ -549,11 +462,9 @@ void Jer::decode() {
     switch (procs->instruction->op) {
     case J: case JAL:
         label_address = ic[0];
-        // label_address = lab2src[instruction->tokens[1]];
         break;
     case JR: case JALR:
         Rsrc1 = ic[0];
-        // Rsrc1 = regTable[instruction->tokens[1]];
         break;
     default:
         cerr << "Jer bug" << endl;
@@ -608,18 +519,6 @@ void Loader::decode() {
         offset = ic[1];
         Rsrc1 = ic[2];
     }
-    /*
-    vector<string> &tokens = instruction->tokens;
-    Rdest = regTable[tokens[1]];
-    /// if this line is label.
-    if (!ch_in_string(tokens[2], '$')) {
-        label_address = var2mem[tokens[2]];
-    }
-    /// if this line is displacement address.
-    else {
-        displacement_extractor(tokens[2], offset, Rsrc1);
-    }
-     */
 }
 
 void Loader::execute() {
@@ -686,18 +585,6 @@ void Storer::decode() {
         offset = ic[1];
         Rsrc1 = ic[2];
     }
-    /*
-    vector<string> &tokens = instruction->tokens;
-    Rdest = regTable[tokens[1]];
-    /// if this line is label.
-    if (!ch_in_string(tokens[2], '$')) {
-        label_address = var2mem[tokens[2]];
-    }
-    /// if this line is displacement address.
-    else {
-        displacement_extractor(tokens[2], offset, Rsrc1);
-    }
-     */
 }
 
 void Storer::execute() {
@@ -740,7 +627,6 @@ void Mover::decode() {
     Rdest = ic[0];
     if(procs->instruction->op == MOVE)
         Rsrc1 = ic[1];
-        // Rsrc1 = regTable[instruction->tokens[2]];
 
     switch (procs->instruction->op) {
         case MOVE:
@@ -775,11 +661,6 @@ Syser::Syser(Processor *procs) {
 }
 
 void Syser::decode() {
-    /*
-    opCode = registers[regTable["$v0"]];  /// 系统调用编号值。
-    A = registers[regTable["$a0"]];
-    B = registers[regTable["$a1"]];
-     */
     opCode = registers[2];  /// 系统调用编号值。
     A = registers[4];
     B = registers[5];
@@ -791,8 +672,6 @@ void Syser::execute() {
             printf("%d", A);
             break;
         case 4:
-            // cout << (int) mainMemory->storage[0] << endl;
-            // mainMemory->display();
             printf("%s", mainMemory->storage + A);
 
             break;
@@ -800,40 +679,12 @@ void Syser::execute() {
             scanf("%d", &stdin_temp);
             break;
         case 8:
-            // string str_temp;
             char tmp;
             do {
                 tmp = cin.get();
             } while(tmp == '\n');
             cin.putback(tmp);
-
-            /*
-            char temp[100];
-            cin.getline(temp, B);
-            cout << temp << endl;
-             */
             cin.getline(mainMemory->storage + A, B);
-            /*
-            int i;
-            for(i = 0; i < str_temp.length(); ++i) {
-                mainMemory->storage[A + i] = str_temp[i];
-            }
-            mainMemory->storage[A + i] = '\0';
-             */
-            /*
-            char temp;
-            do {
-                temp = cin.get();
-            } while(temp == '\n');
-            cin.putback(temp);
-
-            for(int i = 0; i < B; ++i) {
-                temp = cin.get();
-                // cout << (int) temp << endl;
-                if(temp == '\n' || temp == ' ') break;
-                mainMemory->storage[A + i] = temp;
-            }
-             */
             break;
         case 10:
             OK = false;
@@ -847,7 +698,6 @@ void Syser::execute() {
 
 void Syser::memory() {
     if(opCode == 9) {
-        // cerr << "heap memory allocation may be buggy" << endl;
         heap_address = mainMemory->hp;
         mainMemory->hp += A;
     }
@@ -857,15 +707,12 @@ void Syser::writeBack() {
     switch (opCode) {
         case 5:
             registers[2] = stdin_temp;
-            // registers[regTable["$v0"]] = stdin_temp;
             break;
         case 9:
             registers[2] = heap_address;
-            // registers[regTable["$v0"]] = heap_address;
             break;
         case 17:
             registers[4] = 0;
-            // registers[regTable["$a0"]] = 0;
             break;
         default:
             break;

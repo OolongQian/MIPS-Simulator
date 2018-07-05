@@ -272,91 +272,55 @@ private:
      * return whether the instructionPool has ended.
      * */
     bool fetch() {
-        /*
-        if(specialist != nullptr) {
-            delete specialist;
-            specialist = nullptr;
-        }
-        */
         if(registers[34] >= instructionPool->size())
             return false;
         instruction = &instructionPool->at(registers[34]);
         switch (instruction->op) {
             case ADD: case ADDU: case ADDIU:
                 designated = 0;
-                // new (specialist) Adder(instruction);
-                // specialist = (Specialist*) new Adder(instruction);
                 break;
             case SUB: case SUBU:
                 designated = 1;
-                // new (specialist) Suber(instruction);
-                // specialist = (Specialist*) new Suber(instruction);
                 break;
             case MUL: case MULU:
                 designated = 2;
-                // new (specialist) Muler(instruction);
-                // specialist = (Specialist*) new Muler(instruction);
                 break;
             case DIV: case DIVU:
                 designated = 3;
-                // new (specialist) Diver(instruction);
-                // specialist = (Specialist*) new Diver(instruction);
                 break;
             case XOR: case XORU: case REM: case REMU:
                 designated = 4;
-                // new (specialist) XorRemer(instruction);
-                // specialist = (Specialist*) new XorRemer(instruction);
                 break;
             case NEG: case NEGU:
                 designated = 5;
-                // new (specialist) Neger(instruction);
-                // specialist = (Specialist*) new Neger(instruction);
                 break;
             case LI:
                 designated = 6;
-                // new (specialist) Lier(instruction);
-                // specialist = (Specialist*) new Lier(instruction);
                 break;
             case SEQ: case SGE: case SGT: case SLE: case SLT: case SNE:
                 designated = 7;
-                // new (specialist) Comparer(instruction);
-                // specialist = (Specialist*) new Comparer(instruction);
                 break;
             case BB: case BEQ: case BNE: case BGE: case BLE: case BGT: case BLT:
             case BEQZ: case BNEZ: case BLEZ: case BGEZ: case BGTZ: case BLTZ:
                 designated = 8;
-                // new (specialist) Beer(instruction);
-                // specialist = (Specialist*) new Beer(instruction);
                 break;
             case J: case JR: case JAL: case JALR:
                 designated = 9;
-                // new (specialist) Jer(instruction);
-                // specialist = (Specialist*) new Jer(instruction);
                 break;
             case LA: case LB: case LH: case LW:
                 designated = 10;
-                // new (specialist) Loader(instruction);
-                // specialist = (Specialist*) new Loader(instruction);
                 break;
             case SB: case SH: case SW:
                 designated = 11;
-                // new (specialist) Storer(instruction);
-                // specialist = (Specialist*) new Storer(instruction);
                 break;
             case MOVE: case MFHI: case MFLO:
                 designated = 12;
-                // new (specialist) Mover(instruction);
-                // specialist = (Specialist*) new Mover(instruction);
                 break;
             case NOP:
                 designated = 13;
-                // new (specialist) Noper(instruction);
-                // specialist = (Specialist*) new Noper(instruction);
                 break;
             case SYSCALL:
                 designated = 14;
-                // new (specialist) Syser(instruction);
-                // specialist = (Specialist*) new Syser(instruction);
                 break;
 		        default:
 		        		break;
@@ -370,7 +334,6 @@ public:
         instruction = nullptr;
         stage = FETCH;
         designated = 0;
-        // specialist = nullptr;
         specialist[0] = new Adder(this);
         specialist[1] = new Suber(this);
         specialist[2] = new Muler(this);
@@ -424,13 +387,13 @@ public:
             default:
                 break;
         }
-        if(!specialist[designated]->OK) Contin = false;
+        if (!specialist[designated]->OK) Contin = false;
         return Contin;
     }
 
     void display_intruction() {
         cout << registers[34] << ". ";
-        for(int i = 0; i < instruction->tokens.size(); ++i)
+        for (int i = 0; i < instruction->tokens.size(); ++i)
             cout << instruction->tokens[i] << ' ';
         cout << endl;
     }

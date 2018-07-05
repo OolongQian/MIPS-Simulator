@@ -281,20 +281,6 @@ public:
 						}
 				}
     }
-    /**
-     * trace back and replace label placeholders with corresponding line number and memory address.
-     * index2label 盛放着所有需要替换的地方，通过遍历它可以把所有的placeholder替换成直接的地址。
-     * */
-        // map<int, string>::iterator iter;
-        // for(iter = index2label.begin(); iter != index2label.end(); ++iter) {
-        //     instructionPool[(*iter).first].Address = label2index.at((*iter).second);
-        // }
-        /**
-         * debug code, print all completed logs.
-         * */
-        // for(Instruction temp : instructionPool) {
-        //     temp.display();
-        // }
 };
 
 #endif //MYMIPSRE_PARSER_H
