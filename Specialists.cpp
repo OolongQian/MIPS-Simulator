@@ -625,6 +625,11 @@ void Loader::decode() {
 void Loader::execute() {
     if(offset == INT_MAX) ALUoutput = label_address;
     else ALUoutput = registers[Rsrc1] + offset;
+
+    /**
+     * set offset to INT_MAX again, reset immediately.
+     * */
+    offset = INT_MAX;
 }
 
 void Loader::memory() {
@@ -698,6 +703,11 @@ void Storer::decode() {
 void Storer::execute() {
     if(offset == INT_MAX) ALUoutput = label_address;
     else ALUoutput = registers[Rsrc1] + offset;
+
+    /**
+     * set offset to INT_MAX again, reset immediately.
+     * */
+    offset = INT_MAX;
 }
 
 void Storer::memory() {

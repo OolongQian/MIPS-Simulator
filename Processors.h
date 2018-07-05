@@ -265,8 +265,12 @@ public:
     Instruction *instruction;
 private:
     stageType stage;
-    Specialist *specialist;
+    Specialist *specialist[15];
+    int designated;             /// chosen specialist.
 private:
+    /**
+     * return whether the instructionPool has ended.
+     * */
     bool fetch() {
         /*
         if(specialist != nullptr) {
@@ -279,70 +283,85 @@ private:
         instruction = &instructionPool->at(registers[34]);
         switch (instruction->op) {
             case ADD: case ADDU: case ADDIU:
-                new (specialist) Adder(this);
+                designated = 0;
+                // new (specialist) Adder(instruction);
                 // specialist = (Specialist*) new Adder(instruction);
                 break;
             case SUB: case SUBU:
-                new (specialist) Suber(this);
+                designated = 1;
+                // new (specialist) Suber(instruction);
                 // specialist = (Specialist*) new Suber(instruction);
                 break;
             case MUL: case MULU:
-                new (specialist) Muler(this);
+                designated = 2;
+                // new (specialist) Muler(instruction);
                 // specialist = (Specialist*) new Muler(instruction);
                 break;
             case DIV: case DIVU:
-                new (specialist) Diver(this);
+                designated = 3;
+                // new (specialist) Diver(instruction);
                 // specialist = (Specialist*) new Diver(instruction);
                 break;
             case XOR: case XORU: case REM: case REMU:
-                new (specialist) XorRemer(this);
+                designated = 4;
+                // new (specialist) XorRemer(instruction);
                 // specialist = (Specialist*) new XorRemer(instruction);
                 break;
             case NEG: case NEGU:
-                new (specialist) Neger(this);
+                designated = 5;
+                // new (specialist) Neger(instruction);
                 // specialist = (Specialist*) new Neger(instruction);
                 break;
             case LI:
-                new (specialist) Lier(this);
+                designated = 6;
+                // new (specialist) Lier(instruction);
                 // specialist = (Specialist*) new Lier(instruction);
                 break;
             case SEQ: case SGE: case SGT: case SLE: case SLT: case SNE:
-                new (specialist) Comparer(this);
+                designated = 7;
+                // new (specialist) Comparer(instruction);
                 // specialist = (Specialist*) new Comparer(instruction);
                 break;
             case BB: case BEQ: case BNE: case BGE: case BLE: case BGT: case BLT:
             case BEQZ: case BNEZ: case BLEZ: case BGEZ: case BGTZ: case BLTZ:
-                new (specialist) Beer(this);
+                designated = 8;
+                // new (specialist) Beer(instruction);
                 // specialist = (Specialist*) new Beer(instruction);
                 break;
             case J: case JR: case JAL: case JALR:
-                new (specialist) Jer(this);
+                designated = 9;
+                // new (specialist) Jer(instruction);
                 // specialist = (Specialist*) new Jer(instruction);
                 break;
             case LA: case LB: case LH: case LW:
-                new (specialist) Loader(this);
+                designated = 10;
+                // new (specialist) Loader(instruction);
                 // specialist = (Specialist*) new Loader(instruction);
                 break;
             case SB: case SH: case SW:
-                new (specialist) Storer(this);
+                designated = 11;
+                // new (specialist) Storer(instruction);
                 // specialist = (Specialist*) new Storer(instruction);
                 break;
             case MOVE: case MFHI: case MFLO:
-                new (specialist) Mover(this);
+                designated = 12;
+                // new (specialist) Mover(instruction);
                 // specialist = (Specialist*) new Mover(instruction);
                 break;
             case NOP:
-                new (specialist) Noper(this);
+                designated = 13;
+                // new (specialist) Noper(instruction);
                 // specialist = (Specialist*) new Noper(instruction);
                 break;
             case SYSCALL:
-                new (specialist) Syser(this);
+                designated = 14;
+                // new (specialist) Syser(instruction);
                 // specialist = (Specialist*) new Syser(instruction);
                 break;
 		        default:
 		        		break;
         }
-        specialist->Npc = ++registers[34];
+        specialist[designated]->Npc = ++registers[34];
         return true;
     }
 
@@ -350,10 +369,34 @@ public:
     explicit Processor() {
         instruction = nullptr;
         stage = FETCH;
+        designated = 0;
         // specialist = nullptr;
-        specialist = (Specialist *) malloc(200);
+        specialist[0] = new Adder(this);
+        specialist[1] = new Suber(this);
+        specialist[2] = new Muler(this);
+        specialist[3] = new Diver(this);
+        specialist[4] = new XorRemer(this);
+        specialist[5] = new Neger(this);
+        specialist[6] = new Lier(this);
+        specialist[7] = new Comparer(this);
+        specialist[8] = new Beer(this);
+        specialist[9] = new Jer(this);
+        specialist[10] = new Loader(this);
+        specialist[11] = new Storer(this);
+        specialist[12] = new Mover(this);
+        specialist[13] = new Noper(this);
+        specialist[14] = new Syser(this);
     }
 
+    ~Processor() {
+        for(int i = 0; i < 15; ++i) {
+            delete specialist[i];
+        }
+    }
+
+    /**
+     * step or reset the specialist.
+     * */
     bool step() {
         bool Contin = true;
 
@@ -363,25 +406,25 @@ public:
                 stage = DECODE;
                 break;
             case DECODE:
-                specialist->decode();
+                specialist[designated]->decode();
                 stage = EXECUTE;
                 break;
             case EXECUTE:
-                specialist->execute();
+                specialist[designated]->execute();
                 stage = MEMORY;
                 break;
             case MEMORY:
-                specialist->memory();
+                specialist[designated]->memory();
                 stage = WRITEBACK;
                 break;
             case WRITEBACK:
-                specialist->writeBack();
+                specialist[designated]->writeBack();
                 stage = FETCH;
                 break;
             default:
                 break;
         }
-        if(!specialist->OK) Contin = false;
+        if(!specialist[designated]->OK) Contin = false;
         return Contin;
     }
 
