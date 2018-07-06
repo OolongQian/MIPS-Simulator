@@ -9,27 +9,83 @@
 #include <vector>
 #include <map>
 
-#include "Scanner.h"
 #include "Utility.h"
-#include "Instruction.h"
+#include "InsMem.h"
+#include "Global.h"
 
 // #define RUN2
 
 using namespace std;
 
-extern ifstream fp;
 
-extern vector<Instruction> *instructionPool;
+/**
+ * A class that is used to scan a line of code and interpret it into a vector of tokens.
+ * It returns true if a line isn't trivial, false otherwise.
+ * It is able to recognize comment, tab, comma...
+ * */
+class Scanner {
+private:
+		string *line;
+		int index, len;
+public:
+		Scanner() {
+				index = len = 0;
+				line = nullptr;
+		}
 
-extern MemoryHW *mainMemory;
+		/**
+		 * Specify a new line to process.
+		 * */
+		void setLine(string &src_line) {
+				line = &src_line;
+				len = line->length();
+				index = 0;
+		}
 
-extern int registers[35];
+		/**
+		 * process current line to end, and ends up with a tokens vector.
+		 * If this line is trivial, return false, otherwise return true.
+		 * */
+		bool getTokens(vector<string> &tokens) {
+				string token;
+				while ((token = getNextToken()) != "") {
+						tokens.push_back(token);
+				}
+				if (tokens.size() == 0) return false;
+				else return true;
+		}
 
-extern map<string, short> regTable;
-extern map<string, opType> opTable;
+private:
+		/**
+		 * Get next token which is separated by " "、 ","、and tab.
+		 * If the token returned is "", line-processing is finished.
+		 * */
+		string getNextToken() {
+				string str = "";
 
-extern map<string, int> var2mem;
-extern map<string, int> lab2src;
+				/// 跳过前面没有意义的。
+				while (index < len && ((*line)[index] == ' ' || (*line)[index] == '\t' || (*line)[index] == ',')) {
+						++index;
+				}
+				/**
+				 * 注意，我们在爬字符串的时候要非常小心，否则就是完蛋。
+				 * 直接特判。
+				 * */
+
+				if (index < len && (*line)[index] != '\"') {
+						while (index < len && (*line)[index] != ' ' && (*line)[index] != '\t' && (*line)[index] != ',') {
+								str += (*line)[index];
+								++index;
+						}
+				} else if (index < len && (*line)[index] == '\"') {
+						while (index < len) {
+								str += (*line)[index];
+								++index;
+						}
+				}
+				return str;
+		}
+};
 
 /**
  * This is a class that parse the text source code and fill instructionPool.
@@ -263,7 +319,7 @@ public:
 										if(!ins.ch_in_str)
 												ins.ins_code[1] = var2mem[ins.tokens[2]];
 										else
-												displacement_extractor(ins.tokens[2], ins.ins_code[1], ins.ins_code[2]);
+												displacement_extractor(regTable, ins.tokens[2], ins.ins_code[1], ins.ins_code[2]);
 										break;
 								case MOVE:
 										ins.ins_code[0] = regTable[ins.tokens[1]];

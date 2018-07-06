@@ -8,45 +8,12 @@
 #include <vector>
 #include <map>
 #include <fstream>
-#include "Instruction.h"
-#include "MemoryHW.h"
 #include "Parser.h"
-#include "Processors.h"
-
+#include "InsMem.h"
+#include "Coordinator.h"
 using namespace std;
 
 
-ifstream fp;
-/**
- * myLexer parses the source code file.
- * */
-Parser *parser;
-
-/**
- * instructions have linear structure.
- * */
-vector<Instruction> *instructionPool;
-
-/**
- * a main memory for static, stack, heap.
- * */
-MemoryHW *mainMemory;
-
-/**
- * simulator 35 registers.
- * */
-int registers[35];
-
-/**
- * two label maps.
- * */
-map<string, int> var2mem;
-map<string, int> lab2src;
-
-map<string, short> regTable;
-map<string, opType> opTable;
-
-bool returnFlag;
 
 class Simulator {
 private:
@@ -175,11 +142,13 @@ private:
 				opTable["syscall"] = SYSCALL;
 		}
 
-		Processor procs;
+		Coordinator *steward;
+		Parser *parser;
 public:
 		Simulator() {
 				parser = new Parser();
 				instructionPool = new vector<Instruction>;
+				steward = new Coordinator();
 				mainMemory = new MemoryHW();
 				memset(registers, 0, sizeof(registers));
 				registers[29] = 4 * 1024 * 1024 - 1;
@@ -208,19 +177,13 @@ public:
 		int pipeline() {
 				int step_counter = 0;
 
-				while (procs.step());
+				steward->commence();
 
 				if (returnFlag) return registers[4];
 				else return 0;
 		}
 
-		void registers_display() {
-				cout << "display:" << endl;
-				for (int i = 0; i < 35; ++i) {
-						cout << i << ": " << registers[i] << ' ';
-				}
-				cout << endl;
-		}
+
 
 		void display_all_label() {
 				for (pair<string, int> elem : lab2src) {

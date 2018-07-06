@@ -9,14 +9,13 @@
 #include <iostream>
 #include <map>
 
-#include "Instruction.h"
+#include "InsMem.h"
 
 #define RUN
+// #define DISPLAY
+// #define INS
 
 using namespace std;
-
-extern map<string, short> regTable;
-extern map<string, opType> opTable;
 
 /**
  * parse a actual 'string' from an input raw string.
@@ -107,7 +106,7 @@ bool ch_in_string(const string &str, const char &ch) {
 /**
  * Given string as "100($fp), extract register_id number and the offset integer in the front "
  * */
-void displacement_extractor(const string &str, int &offset, int &register_id) {
+void displacement_extractor(map<string, short> &local_regTable, const string &str, int &offset, int &register_id) {
     bool minus = false;
     int len = str.length();
     int index = 0;
@@ -128,7 +127,7 @@ void displacement_extractor(const string &str, int &offset, int &register_id) {
         register_name += str[index];
         ++index;
     }
-    register_id = regTable[register_name];
+    register_id = local_regTable[register_name];
 }
 
 #endif //MYMIPSRE_UTILITY_H
