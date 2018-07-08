@@ -10,10 +10,11 @@
 #include <map>
 
 #include "InsMem.h"
+#include "Global.h"
 
 #define RUN
-#define DISPLAY 
-#define INS
+// #define DISPLAY
+// #define INS
 
 using namespace std;
 
@@ -128,6 +129,35 @@ void displacement_extractor(map<string, short> &local_regTable, const string &st
         ++index;
     }
     register_id = local_regTable[register_name];
+}
+
+
+void registers_display() {
+		cout << "display:" << endl;
+		for (int i = 0; i < 35; ++i) {
+				cout << i << ": " << registers[i] << ' ';
+		}
+		cout << endl;
+}
+
+/**
+ * pos is the position we start flushing till the beginning.
+ * */
+void flush(int low, int high) {
+		for(; low <= high; ++low) {
+				if(converter[low] != -1) {
+						reserve.push(converter[low]);
+						converter[low] = -1;
+				}
+		}
+		/*
+		for(int i = pos; i >= 0; --i) {
+				if(converter[i] != -1) {
+						reserve.push(converter[i]);
+						converter[i] = -1;
+				}
+		}
+		 */
 }
 
 #endif //MYMIPSRE_UTILITY_H

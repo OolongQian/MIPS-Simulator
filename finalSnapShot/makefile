@@ -4,7 +4,7 @@ SRCS = main.cpp
 OBJS = $(SRCS:.c=.o)
 
 $(TARGET):$(OBJS)
-	g++ main.cpp -o code -std=c++11
+	g++ main.cpp -o decode -std=c++11 -O2
 
 clean:
 	rm -rf code

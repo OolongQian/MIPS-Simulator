@@ -274,7 +274,12 @@ private:
     bool fetch() {
         if(registers[34] >= instructionPool->size())
             return false;
+        
         instruction = &instructionPool->at(registers[34]);
+        cout << registers[34] << ". ";
+            for (int i = 0; i < instruction->tokens.size(); ++i)
+                cout << instruction->tokens[i] << ' ';
+        cout << endl;
         switch (instruction->op) {
             case ADD: case ADDU: case ADDIU:
                 designated = 0;

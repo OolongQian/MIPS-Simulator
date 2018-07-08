@@ -1,2 +1,2 @@
-# MIPS-Simulator
+display# MIPS-Simulator
 PPCA first project

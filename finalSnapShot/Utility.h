@@ -12,7 +12,7 @@
 #include "InsMem.h"
 
 #define RUN
-#define DISPLAY 
+#define DISPLAY
 #define INS
 
 using namespace std;
