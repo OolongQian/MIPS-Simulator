@@ -23,6 +23,6 @@ int main(int argc, char **argv) {
     // cout << instructionPool->size() << endl;
     retCode = sim.pipeline();
 
-    printf("预测了%d次，正确了%d次\n", predictTimes, predictCorrectTimes);
+    printf("预测了%d次，正确了%d次，准确率%f\n", predictTimes, predictCorrectTimes, double(predictCorrectTimes) / double(predictTimes));
     return retCode;
 }

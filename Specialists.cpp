@@ -568,8 +568,11 @@ void Beer::decode() {
 				/// 进行分支预测，直接修改pc
 				predictJInstructions.push(procs->ins_idx);
 				/// 预测跳转
-				// int predictIndex = procs->ins_idx ^ globalPredHistory;
-				int predictIndex = procs->ins_idx;
+				int predictIndex = procs->ins_idx ^ (globalPredHistory);
+				// int predictIndex = procs->ins_idx;
+
+				// cout << globalPredHistory << endl;
+				// cout << (globalPredHistory & 0xf) << endl << endl;
 				predictIndices.push(predictIndex);
 
 				if(predictTable.find(predictIndex) == predictTable.end()) {
@@ -695,8 +698,8 @@ void Beer::writeBack() {
 		/// 进行了分支预测，要比较预测结果和ALUoutput是否一样
 		else {
 				++predictTimes;
-				int predictIndex = procs->ins_idx;
-				// int predictIndex = predictIndices.front();
+				// int predictIndex = procs->ins_idx;
+				int predictIndex = predictIndices.front();
 				predictIndices.pop();
 
 				/// 如果预测结果和计算结果一样，那么万事大吉
@@ -706,14 +709,18 @@ void Beer::writeBack() {
 						/// 如果预测了不跳转，且预测结果正确
 						if(predictedAddress.front() == Npc) {
 								predictTable[predictIndex] = max(-1, predictTable[predictIndex] - 1);
+								/// 更新global history
+								globalPredHistory = (globalPredHistory << 1) + 0;
 						}
 						/// 如果预测了跳转，并且预测正确
 						else {
 								predictTable[predictIndex] = min(2, predictTable[predictIndex] + 1);
+								/// 更新global history
+								globalPredHistory = (globalPredHistory << 1) + 1;
 						}
-						/// 更新global history
-						globalPredHistory = (globalPredHistory << 1) + 1;
 
+						/// 更新global history
+						// globalPredHistory = (globalPredHistory << 1) + 0;
 
 						/// 现在我是暂时++reg_in_use的
 						// --reg_in_use[34];
@@ -722,14 +729,20 @@ void Beer::writeBack() {
 				else {
 
 						/// 如果预测了不跳转，且预测结果错误
-						if(predictedAddress.front() == Npc)
+						if(predictedAddress.front() == Npc) {
 								predictTable[predictIndex] = min(2, predictTable[predictIndex] + 1);
+								/// 更新global history
+								globalPredHistory = (globalPredHistory << 1) + 1;
+						}
 								/// 如果预测了跳转，并且预测错误
-						else
+						else {
 								predictTable[predictIndex] = max(-1, predictTable[predictIndex] - 1);
+								/// 更新global history
+								globalPredHistory = (globalPredHistory << 1) + 0;
+						}
 
 						/// 更新global history
-						globalPredHistory = (globalPredHistory << 1) + 0;
+						// globalPredHistory = (globalPredHistory << 1) + 0;
 
 						flushSignal = true;
 						registers[34] = ALUoutput;

@@ -513,6 +513,7 @@ private:
 										/// 清空所有的 recordedNpc和predictedAddress
 										while(!predictJInstructions.empty()) predictJInstructions.pop();
 										while(!predictedAddress.empty()) predictedAddress.pop();
+										while(!predictIndices.empty()) predictIndices.pop();
 										/// 清空所有的 reg_in_use
 										memset(reg_in_use, 0, sizeof(reg_in_use));
 										/// 重制一些容易遗忘的东西
