@@ -1,0 +1,565 @@
+5. jal _buffer_init 
+0. li $a0 256 
+1. li $v0 9 
+2. syscall 
+3. sw $v0 _buffer 
+4. jr $ra 
+6. add $fp $zero $sp 
+7. li $8 4 
+8. add $9 $8 1 
+9. mul $10 $9 4 
+10. li $v0 9 
+11. move $a0 $10 
+12. syscall 
+13. sw $v0 -12($fp) 
+14. li $8 4 
+15. lw $9 -12($fp) 
+16. sw $8 0($9) 
+17. add $10 $9 4 
+18. sw $10 _static_1 
+19. jal _func_main 
+269. sw $fp -256($sp) 
+270. add $fp $sp -4 
+271. add $sp $fp -260 
+272. sw $ra 0($sp) 
+273. lw $8 _static_1 
+274. sub $9 $8 4 
+275. lw $10 0($9) 
+276. add $11 $10 1 
+277. mul $12 $11 4 
+278. li $v0 9 
+279. move $a0 $12 
+280. sw $10 -12($fp) 
+281. syscall 
+282. sw $v0 -24($fp) 
+283. lw $8 -12($fp) 
+284. lw $9 -24($fp) 
+285. sw $8 0($9) 
+286. add $10 $9 4 
+287. li $11 0 
+288. sw $10 0($fp) 
+289. sw $11 -4($fp) 
+290. lw $8 _static_1 
+291. sub $9 $8 4 
+292. lw $10 0($9) 
+293. lw $11 -4($fp) 
+294. bge $11 $10 _end_loop_4 
+295. lw $8 -4($fp) 
+296. mul $9 $8 4 
+297. lw $10 _static_1 
+298. add $11 $10 $9 
+299. sw $zero 0($11) 
+300. li $v0 5 
+301. syscall 
+302. sw $v0 -60($fp) 
+303. lw $8 -4($fp) 
+304. mul $9 $8 4 
+305. lw $10 0($fp) 
+306. add $11 $10 $9 
+307. lw $12 -60($fp) 
+308. sw $12 0($11) 
+309. lw $8 -4($fp) 
+310. add $8 $8 1 
+311. move $8 $8 
+312. sw $8 -4($fp) 
+313. b _begin_loop_4 
+290. lw $8 _static_1 
+291. sub $9 $8 4 
+292. lw $10 0($9) 
+293. lw $11 -4($fp) 
+294. bge $11 $10 _end_loop_4 
+295. lw $8 -4($fp) 
+296. mul $9 $8 4 
+297. lw $10 _static_1 
+298. add $11 $10 $9 
+299. sw $zero 0($11) 
+300. li $v0 5 
+301. syscall 
+302. sw $v0 -60($fp) 
+303. lw $8 -4($fp) 
+304. mul $9 $8 4 
+305. lw $10 0($fp) 
+306. add $11 $10 $9 
+307. lw $12 -60($fp) 
+308. sw $12 0($11) 
+309. lw $8 -4($fp) 
+310. add $8 $8 1 
+311. move $8 $8 
+312. sw $8 -4($fp) 
+313. b _begin_loop_4 
+290. lw $8 _static_1 
+291. sub $9 $8 4 
+292. lw $10 0($9) 
+293. lw $11 -4($fp) 
+294. bge $11 $10 _end_loop_4 
+295. lw $8 -4($fp) 
+296. mul $9 $8 4 
+297. lw $10 _static_1 
+298. add $11 $10 $9 
+299. sw $zero 0($11) 
+300. li $v0 5 
+301. syscall 
+302. sw $v0 -60($fp) 
+303. lw $8 -4($fp) 
+304. mul $9 $8 4 
+305. lw $10 0($fp) 
+306. add $11 $10 $9 
+307. lw $12 -60($fp) 
+308. sw $12 0($11) 
+309. lw $8 -4($fp) 
+310. add $8 $8 1 
+311. move $8 $8 
+312. sw $8 -4($fp) 
+313. b _begin_loop_4 
+290. lw $8 _static_1 
+291. sub $9 $8 4 
+292. lw $10 0($9) 
+293. lw $11 -4($fp) 
+294. bge $11 $10 _end_loop_4 
+295. lw $8 -4($fp) 
+296. mul $9 $8 4 
+297. lw $10 _static_1 
+298. add $11 $10 $9 
+299. sw $zero 0($11) 
+300. li $v0 5 
+301. syscall 
+302. sw $v0 -60($fp) 
+303. lw $8 -4($fp) 
+304. mul $9 $8 4 
+305. lw $10 0($fp) 
+306. add $11 $10 $9 
+307. lw $12 -60($fp) 
+308. sw $12 0($11) 
+309. lw $8 -4($fp) 
+310. add $8 $8 1 
+311. move $8 $8 
+312. sw $8 -4($fp) 
+313. b _begin_loop_4 
+290. lw $8 _static_1 
+291. sub $9 $8 4 
+292. lw $10 0($9) 
+293. lw $11 -4($fp) 
+294. bge $11 $10 _end_loop_4 
+314. li $8 0 
+315. sw $8 -4($fp) 
+316. lw $8 _static_1 
+317. sub $9 $8 4 
+318. lw $10 0($9) 
+319. lw $11 -4($fp) 
+320. bge $11 $10 _end_loop_5 
+321. lw $8 -4($fp) 
+322. mul $9 $8 4 
+323. lw $10 _static_1 
+324. add $11 $10 $9 
+325. lw $12 0($11) 
+326. sw $12 -4($sp) 
+327. jal _func_____built_in_toString 
+482. lw $a0 -4($sp) 
+483. li $t0 0 
+484. bgez $a0 _skip_set_less_than_zero 
+487. beqz $a0 _set_zero 
+522. li $a0 6 
+523. li $v0 9 
+524. syscall 
+525. li $a0 1 
+526. sw $a0 0($v0) 
+527. add $v0 $v0 4 
+528. li $a0 48 
+529. sb $a0 0($v0) 
+530. jr $ra 
+328. sw $v0 -92($fp) 
+329. lw $8 -92($fp) 
+330. li $v0 4 
+331. move $a0 $8 
+332. syscall 
+333. lw $8 -4($fp) 
+334. add $8 $8 1 
+0335. move $8 $8 
+336. sw $8 -4($fp) 
+337. b _begin_loop_5 
+316. lw $8 _static_1 
+317. sub $9 $8 4 
+318. lw $10 0($9) 
+319. lw $11 -4($fp) 
+320. bge $11 $10 _end_loop_5 
+321. lw $8 -4($fp) 
+322. mul $9 $8 4 
+323. lw $10 _static_1 
+324. add $11 $10 $9 
+325. lw $12 0($11) 
+326. sw $12 -4($sp) 
+327. jal _func_____built_in_toString 
+482. lw $a0 -4($sp) 
+483. li $t0 0 
+484. bgez $a0 _skip_set_less_than_zero 
+487. beqz $a0 _set_zero 
+522. li $a0 6 
+523. li $v0 9 
+524. syscall 
+525. li $a0 1 
+526. sw $a0 0($v0) 
+527. add $v0 $v0 4 
+528. li $a0 48 
+529. sb $a0 0($v0) 
+530. jr $ra 
+328. sw $v0 -92($fp) 
+329. lw $8 -92($fp) 
+330. li $v0 4 
+331. move $a0 $8 
+332. syscall 
+333. lw $8 -4($fp) 
+334. add $8 $8 1 
+0335. move $8 $8 
+336. sw $8 -4($fp) 
+337. b _begin_loop_5 
+316. lw $8 _static_1 
+317. sub $9 $8 4 
+318. lw $10 0($9) 
+319. lw $11 -4($fp) 
+320. bge $11 $10 _end_loop_5 
+321. lw $8 -4($fp) 
+322. mul $9 $8 4 
+323. lw $10 _static_1 
+324. add $11 $10 $9 
+325. lw $12 0($11) 
+326. sw $12 -4($sp) 
+327. jal _func_____built_in_toString 
+482. lw $a0 -4($sp) 
+483. li $t0 0 
+484. bgez $a0 _skip_set_less_than_zero 
+487. beqz $a0 _set_zero 
+522. li $a0 6 
+523. li $v0 9 
+524. syscall 
+525. li $a0 1 
+526. sw $a0 0($v0) 
+527. add $v0 $v0 4 
+528. li $a0 48 
+529. sb $a0 0($v0) 
+530. jr $ra 
+328. sw $v0 -92($fp) 
+329. lw $8 -92($fp) 
+330. li $v0 4 
+331. move $a0 $8 
+332. syscall 
+333. lw $8 -4($fp) 
+334. add $8 $8 1 
+0335. move $8 $8 
+336. sw $8 -4($fp) 
+337. b _begin_loop_5 
+316. lw $8 _static_1 
+317. sub $9 $8 4 
+318. lw $10 0($9) 
+319. lw $11 -4($fp) 
+320. bge $11 $10 _end_loop_5 
+321. lw $8 -4($fp) 
+322. mul $9 $8 4 
+323. lw $10 _static_1 
+324. add $11 $10 $9 
+325. lw $12 0($11) 
+326. sw $12 -4($sp) 
+327. jal _func_____built_in_toString 
+482. lw $a0 -4($sp) 
+483. li $t0 0 
+484. bgez $a0 _skip_set_less_than_zero 
+487. beqz $a0 _set_zero 
+522. li $a0 6 
+523. li $v0 9 
+524. syscall 
+525. li $a0 1 
+526. sw $a0 0($v0) 
+527. add $v0 $v0 4 
+528. li $a0 48 
+529. sb $a0 0($v0) 
+530. jr $ra 
+328. sw $v0 -92($fp) 
+329. lw $8 -92($fp) 
+330. li $v0 4 
+331. move $a0 $8 
+332. syscall 
+333. lw $8 -4($fp) 
+334. add $8 $8 1 
+0335. move $8 $8 
+336. sw $8 -4($fp) 
+337. b _begin_loop_5 
+316. lw $8 _static_1 
+317. sub $9 $8 4 
+318. lw $10 0($9) 
+319. lw $11 -4($fp) 
+320. bge $11 $10 _end_loop_5 
+338. la $8 _static_2 
+339. move $9 $8 
+340. li $v0 4 
+341. move $a0 $9 
+342. syscall 
+343. la $8 _static_0 
+344. li $v0 4 
+345. move $a0 $8 
+346. syscall 
+347. lw $8 0($fp) 
+348. li $9 0 
+
+349. sw $8 _static_1 
+350. sw $9 -4($fp) 
+351. lw $8 _static_1 
+352. sub $9 $8 4 
+353. lw $10 0($9) 
+354. lw $11 -4($fp) 
+355. bge $11 $10 _end_loop_6 
+356. lw $8 -4($fp) 
+357. mul $9 $8 4 
+358. lw $10 _static_1 
+359. add $11 $10 $9 
+360. lw $12 0($11) 
+361. sw $12 -4($sp) 
+362. jal _func_____built_in_toString 
+482. lw $a0 -4($sp) 
+483. li $t0 0 
+484. bgez $a0 _skip_set_less_than_zero 
+487. beqz $a0 _set_zero 
+488. li $t1 0 
+489. move $t2 $a0 
+490. move $t3 $a0 
+491. li $t5 10 
+492. div $t2 $t5 
+493. mflo $v0 
+494. mfhi $v1 
+495. bgtz $v0 _not_yet 
+496. bgtz $v1 _not_yet 
+498. add $t1 $t1 1 
+499. move $t2 $v0 
+500. j _begin_count_digit 
+492. div $t2 $t5 
+493. mflo $v0 
+494. mfhi $v1 
+495. bgtz $v0 _not_yet 
+496. bgtz $v1 _not_yet 
+497. j _yet 
+501. beqz $t0 _skip_reserve_neg 
+503. add $a0 $t1 5 
+504. li $v0 9 
+505. syscall 
+506. sw $t1 0($v0) 
+507. add $v0 $v0 4 
+508. add $t1 $t1 $v0 
+509. sb $zero 0($t1) 
+510. sub $t1 $t1 1 
+511. div $t3 $t5 
+512. mfhi $v1 
+513. add $v1 $v1 48 
+514. sb $v1 0($t1) 
+515. sub $t1 $t1 1 
+516. mflo $t3 
+517. bnez $t3 _continue_toString 
+518. beqz $t0 _skip_place_neg 
+521. jr $ra 
+363. sw $v0 -128($fp) 
+364. lw $8 -128($fp) 
+365. li $v0 4 
+366. move $a0 $8 
+367. syscall 
+368. lw $8 -4($fp) 
+369. add $8 $8 1 
+1370. move $8 $8 
+371. sw $8 -4($fp) 
+372. b _begin_loop_6 
+351. lw $8 _static_1 
+352. sub $9 $8 4 
+353. lw $10 0($9) 
+354. lw $11 -4($fp) 
+355. bge $11 $10 _end_loop_6 
+356. lw $8 -4($fp) 
+357. mul $9 $8 4 
+358. lw $10 _static_1 
+359. add $11 $10 $9 
+360. lw $12 0($11) 
+361. sw $12 -4($sp) 
+362. jal _func_____built_in_toString 
+482. lw $a0 -4($sp) 
+483. li $t0 0 
+484. bgez $a0 _skip_set_less_than_zero 
+487. beqz $a0 _set_zero 
+488. li $t1 0 
+489. move $t2 $a0 
+490. move $t3 $a0 
+491. li $t5 10 
+492. div $t2 $t5 
+493. mflo $v0 
+494. mfhi $v1 
+495. bgtz $v0 _not_yet 
+496. bgtz $v1 _not_yet 
+498. add $t1 $t1 1 
+499. move $t2 $v0 
+500. j _begin_count_digit 
+492. div $t2 $t5 
+493. mflo $v0 
+494. mfhi $v1 
+495. bgtz $v0 _not_yet 
+496. bgtz $v1 _not_yet 
+497. j _yet 
+501. beqz $t0 _skip_reserve_neg 
+503. add $a0 $t1 5 
+504. li $v0 9 
+505. syscall 
+506. sw $t1 0($v0) 
+507. add $v0 $v0 4 
+508. add $t1 $t1 $v0 
+509. sb $zero 0($t1) 
+510. sub $t1 $t1 1 
+511. div $t3 $t5 
+512. mfhi $v1 
+513. add $v1 $v1 48 
+514. sb $v1 0($t1) 
+515. sub $t1 $t1 1 
+516. mflo $t3 
+517. bnez $t3 _continue_toString 
+518. beqz $t0 _skip_place_neg 
+521. jr $ra 
+363. sw $v0 -128($fp) 
+364. lw $8 -128($fp) 
+365. li $v0 4 
+366. move $a0 $8 
+367. syscall 
+368. lw $8 -4($fp) 
+369. add $8 $8 1 
+2370. move $8 $8 
+371. sw $8 -4($fp) 
+372. b _begin_loop_6 
+351. lw $8 _static_1 
+352. sub $9 $8 4 
+353. lw $10 0($9) 
+354. lw $11 -4($fp) 
+355. bge $11 $10 _end_loop_6 
+356. lw $8 -4($fp) 
+357. mul $9 $8 4 
+358. lw $10 _static_1 
+359. add $11 $10 $9 
+360. lw $12 0($11) 
+361. sw $12 -4($sp) 
+362. jal _func_____built_in_toString 
+482. lw $a0 -4($sp) 
+483. li $t0 0 
+484. bgez $a0 _skip_set_less_than_zero 
+487. beqz $a0 _set_zero 
+488. li $t1 0 
+489. move $t2 $a0 
+490. move $t3 $a0 
+491. li $t5 10 
+492. div $t2 $t5 
+493. mflo $v0 
+494. mfhi $v1 
+495. bgtz $v0 _not_yet 
+496. bgtz $v1 _not_yet 
+498. add $t1 $t1 1 
+499. move $t2 $v0 
+500. j _begin_count_digit 
+492. div $t2 $t5 
+493. mflo $v0 
+494. mfhi $v1 
+495. bgtz $v0 _not_yet 
+496. bgtz $v1 _not_yet 
+497. j _yet 
+501. beqz $t0 _skip_reserve_neg 
+503. add $a0 $t1 5 
+504. li $v0 9 
+505. syscall 
+506. sw $t1 0($v0) 
+507. add $v0 $v0 4 
+508. add $t1 $t1 $v0 
+509. sb $zero 0($t1) 
+510. sub $t1 $t1 1 
+511. div $t3 $t5 
+512. mfhi $v1 
+513. add $v1 $v1 48 
+514. sb $v1 0($t1) 
+515. sub $t1 $t1 1 
+516. mflo $t3 
+517. bnez $t3 _continue_toString 
+518. beqz $t0 _skip_place_neg 
+521. jr $ra 
+363. sw $v0 -128($fp) 
+364. lw $8 -128($fp) 
+365. li $v0 4 
+366. move $a0 $8 
+367. syscall 
+368. lw $8 -4($fp) 
+369. add $8 $8 1 
+3370. move $8 $8 
+371. sw $8 -4($fp) 
+372. b _begin_loop_6 
+351. lw $8 _static_1 
+352. sub $9 $8 4 
+353. lw $10 0($9) 
+354. lw $11 -4($fp) 
+355. bge $11 $10 _end_loop_6 
+356. lw $8 -4($fp) 
+357. mul $9 $8 4 
+358. lw $10 _static_1 
+359. add $11 $10 $9 
+360. lw $12 0($11) 
+361. sw $12 -4($sp) 
+362. jal _func_____built_in_toString 
+482. lw $a0 -4($sp) 
+483. li $t0 0 
+484. bgez $a0 _skip_set_less_than_zero 
+487. beqz $a0 _set_zero 
+488. li $t1 0 
+489. move $t2 $a0 
+490. move $t3 $a0 
+491. li $t5 10 
+492. div $t2 $t5 
+493. mflo $v0 
+494. mfhi $v1 
+495. bgtz $v0 _not_yet 
+496. bgtz $v1 _not_yet 
+498. add $t1 $t1 1 
+499. move $t2 $v0 
+500. j _begin_count_digit 
+492. div $t2 $t5 
+493. mflo $v0 
+494. mfhi $v1 
+495. bgtz $v0 _not_yet 
+496. bgtz $v1 _not_yet 
+497. j _yet 
+501. beqz $t0 _skip_reserve_neg 
+503. add $a0 $t1 5 
+504. li $v0 9 
+505. syscall 
+506. sw $t1 0($v0) 
+507. add $v0 $v0 4 
+508. add $t1 $t1 $v0 
+509. sb $zero 0($t1) 
+510. sub $t1 $t1 1 
+511. div $t3 $t5 
+512. mfhi $v1 
+513. add $v1 $v1 48 
+514. sb $v1 0($t1) 
+515. sub $t1 $t1 1 
+516. mflo $t3 
+517. bnez $t3 _continue_toString 
+518. beqz $t0 _skip_place_neg 
+521. jr $ra 
+363. sw $v0 -128($fp) 
+364. lw $8 -128($fp) 
+365. li $v0 4 
+366. move $a0 $8 
+367. syscall 
+368. lw $8 -4($fp) 
+369. add $8 $8 1 
+4370. move $8 $8 
+371. sw $8 -4($fp) 
+372. b _begin_loop_6 
+351. lw $8 _static_1 
+352. sub $9 $8 4 
+353. lw $10 0($9) 
+354. lw $11 -4($fp) 
+355. bge $11 $10 _end_loop_6 
+373. lw $ra 0($sp) 
+374. add $sp $fp 4 
+375. lw $fp -252($fp) 
+376. jr $ra 
+20. move $a0 $v0 
+21. li $v0 17 
+22. syscall 
+23. sw $fp -212($sp) 
+24. add $fp $sp -4 

@@ -28,6 +28,16 @@ void Adder::decode() {
     else {
     		++reg_in_use[Rdest];
     }
+    /*
+    vector<string> &tokens = instruction->tokens;
+    bool flag = tokens[3][0] == '$';
+
+    Rdest = regTable[tokens[1]];
+    Rsrc1 = regTable[tokens[2]];
+    /// 特判立即数
+    if(flag) Rsrc2 = regTable[tokens[3]];
+    else Imm = str2int(tokens[3]);
+    */
 
     A = registers[Rsrc1];
     if(procs->instruction->not_imm) B = registers[Rsrc2];
@@ -70,6 +80,16 @@ void Suber::decode() {
 		else {
 				++reg_in_use[Rdest];
 		}
+    /*
+    vector<string> &tokens = procs->instruction->tokens;
+    bool flag = tokens[3][0] == '$';
+
+    Rdest = regTable[tokens[1]];
+    Rsrc1 = regTable[tokens[2]];
+    /// 特判立即数
+    if(flag) Rsrc2 = regTable[tokens[3]];
+    else Imm = str2int(tokens[3]);
+    */
 
     A = registers[Rsrc1];
     if(procs->instruction->not_imm) B = registers[Rsrc2];
@@ -116,7 +136,15 @@ void Muler::decode() {
 		    else {
 				    ++reg_in_use[Rdest];
 		    }
+        /*
+        bool flag = tokens[3][0] == '$';
 
+        Rdest = regTable[tokens[1]];
+        Rsrc1 = regTable[tokens[2]];
+        /// 特判立即数
+        if(flag) Rsrc2 = regTable[tokens[3]];
+        else Imm = str2int(tokens[3]);
+         */
         A = registers[Rsrc1];
         if(procs->instruction->not_imm) B = registers[Rsrc2];
         else B = Imm;
@@ -140,7 +168,13 @@ void Muler::decode() {
 		    		++reg_in_use[32];
 				    ++reg_in_use[33];
 		    }
+        /*
+        bool flag = tokens[2][0] == '$';
 
+        Rsrc1 = regTable[tokens[1]];
+        if(flag) Rsrc2 = regTable[tokens[2]];
+        else Imm = str2int(tokens[2]);
+        */
         A = registers[Rsrc1];
         if(procs->instruction->not_imm) B = registers[Rsrc2];
         else B = Imm;
@@ -536,7 +570,9 @@ void Beer::decode() {
 				/// 预测跳转
 				int predictIndex = procs->ins_idx ^ (globalPredHistory);
 				// int predictIndex = procs->ins_idx;
-				
+
+				// cout << globalPredHistory << endl;
+				// cout << (globalPredHistory & 0xf) << endl << endl;
 				predictIndices.push(predictIndex);
 
 				if(predictTable.find(predictIndex) == predictTable.end()) {
@@ -554,6 +590,61 @@ void Beer::decode() {
 				}
 				++predicting;
 		}
+		/// 分支预测的时候这个reg_in_use要不要改呢？
+		/// 我觉得应该不要，因为这个无非是让后来想要用的人等一等，因为这个寄存器还没有改过来，但是因为分支预测的缘故，它
+		/// 立马就改过来了，所以改是没有必要的
+		// ++reg_in_use[34];
+    /*
+    vector<string> &tokens = procs->instruction->tokens;
+    if(tokens.size() == 4) {
+        Rsrc1 = ic[0];
+        Rsrc2 = -1;
+        if(procs->instruction->not_imm) Rsrc2 = ic[1];
+        else Imm = ic[1];
+
+		    /// 触发 data hazard
+		    if(reg_in_use[Rsrc1] != 0 || (Rsrc2 != -1 && reg_in_use[Rsrc2] != 0)) {
+				    addStall(2, 1);
+				    // stallPos = 1;
+				    // stallCycle = 1;
+				    dataHazard = true;
+#ifdef DISPLAY
+				    cout << "data hazard" << endl;
+#endif
+				    return;
+		    }
+
+        A = registers[Rsrc1];
+        if(procs->instruction->not_imm)
+            B = registers[Rsrc2];
+        else
+            B = Imm;
+
+        label_address = ic[2];
+    }
+    else if(tokens.size() == 3) {
+        Rsrc1 = ic[0];
+
+		    /// 触发 data hazard
+		    if(reg_in_use[Rsrc1] != 0) {
+				    addStall(2, 1);
+				    // stallPos = 1;
+				    // stallCycle = 1;
+				    dataHazard = true;
+#ifdef DISPLAY
+				    cout << "data hazard" << endl;
+#endif
+				    return;
+		    }
+
+        A = registers[Rsrc1];
+        B = 0;
+        label_address = ic[2];
+    }
+    else if(tokens.size() == 2) {
+        label_address = ic[2];
+    }
+     */
 }
 
 void Beer::execute() {
@@ -627,6 +718,12 @@ void Beer::writeBack() {
 								/// 更新global history
 								globalPredHistory = (globalPredHistory << 1) + 1;
 						}
+
+						/// 更新global history
+						// globalPredHistory = (globalPredHistory << 1) + 0;
+
+						/// 现在我是暂时++reg_in_use的
+						// --reg_in_use[34];
 				}
 				/// 如果预测结果和计算结果不一样，那么就要flush了，并且在coordinator当中重制pc
 				else {
@@ -643,6 +740,10 @@ void Beer::writeBack() {
 								/// 更新global history
 								globalPredHistory = (globalPredHistory << 1) + 0;
 						}
+
+						/// 更新global history
+						// globalPredHistory = (globalPredHistory << 1) + 0;
+
 						flushSignal = true;
 						registers[34] = ALUoutput;
 						/// 我先暂时这么写着
